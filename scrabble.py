@@ -98,17 +98,31 @@ class scrabbleSolver:
 					filteredsoln.append(s)
 		return filteredsoln
 
-	def solveAcrossWords(rack,words,blanks=0):
+	def solveAcrossWord(self,rack,word,blanks=0):
 #finds words to cross over existing words. for example a board word is horizontal and it finds a vertical using one letter in the other word.
+		subset=self.solveForRack(rack,1+blanks) 
+#pre-solve for one free letter. then look through result (faster than looking through whole list for each letter).
+		codes=[]
+		for item in subset:
+			codes.append([item.count(i) for i in string.ascii_lowercase])
+		solutions=[]
+		#for each character in word, search for words that have the same number of that letter
 
-		return 0
+		coderack=[rack.count(i) for i in string.ascii_lowercase]
+		for char in word:
+			letter = ord(char) - 97#alphabetic order a=1 b=2 etc
+			codecount=coderack[letter]+1 
+#number of times this letter appears plus the one we added
+			for item in range(len(subset)):				
+				if codes[item][letter]==codecount:
+					solutions.append(subset[item])
+		solutions.sort(key=len)
+		return solutions
+
 	def rankWords(self):
 		return 0
 	def addWords(self,word):
 		self.boardwords.append(word)
 	def clearWords(self,word):
 		self.boardwords=[]
-
-scrab=scrabbleSolver()
-scrab.load()
 
